@@ -13,19 +13,37 @@ class WatchLater extends Component {
     axios
       .get('https://fir-4d930-default-rtdb.firebaseio.com/posts.json')
       .then((res) => {
-        console.log(res.data);
-        this.setState({ watchedlater: res.data });
+        const fetchPosts = [];
+        for (let key in res.data) {
+          fetchPosts.push({
+            ...res.data[key],
+            id: key,
+          });
+        }
+        this.setState({ watchedlater: fetchPosts });
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
+  onDeleteVideo = (id) => {
+    console.log(id);
+    axios
+      .delete(`https://fir-4d930-default-rtdb.firebaseio.com/posts/${id}.json`)
+      .then((res) => {
+        console.log('DELETED SUCCESSFULLY');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
     let list = null;
     if (this.state.watchedlater) {
-      list = Object.values(this.state.watchedlater).map((video) => (
-        <div key={video.id.videoId} style={{ margin: '5px' }}>
+      list = this.state.watchedlater.map((video) => (
+        <div key={video.id} style={{ margin: '5px' }}>
           <div className="video-item item">
             <img
               className="ui image"
@@ -35,15 +53,17 @@ class WatchLater extends Component {
             <div className="content">
               <div className="header">{video.snippet.title}</div>
             </div>
+            <button
+              className="ui primary button"
+              onClick={() => this.onDeleteVideo(video.id)}
+            >
+              REMOVE
+            </button>
           </div>
         </div>
       ));
     }
-    return (
-      <div className="ui relaxed divided list">
-        {list}
-      </div>
-    );
+    return <div className="ui relaxed divided list">{list}</div>;
   }
 }
 
