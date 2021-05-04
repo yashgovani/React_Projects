@@ -44,9 +44,7 @@ function App(props) {
 
   function editTask(id, newName) {
     const editedTaskList = tasks.map((task) => {
-      // if this task has the same ID as the edited task
       if (id === task.id) {
-        //
         return { ...task, name: newName };
       }
       return task;
@@ -96,12 +94,18 @@ function App(props) {
 
   return (
     <div className="todoapp stack-large">
+      {console.log(tasks.filter(FILTER_MAP[filter]))}
       <Form addTask={addTask} />
       <div className="filters btn-group stack-exception">{filterList}</div>
       <h2 id="list-heading" tabIndex="-1" ref={listHeadingRef}>
         {headingText}
       </h2>
-      <ul className="todo-list stack-large stack-exception">{taskList}</ul>
+      <ul
+        className="todo-list stack-large stack-exception"
+        aria-labelledby="list-heading"
+      >
+        {taskList}
+      </ul>
     </div>
   );
 }
